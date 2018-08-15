@@ -11,5 +11,6 @@
         public const string Whereistheorderintent = "WhereIsTheOrderIntent";
         public const string PickAWinnerintent = "PickAWinnerIntent";
         public const string ShowMyBasketintent = "ShowMyBasketIntent";
+        public const string AddProductToCartintent = "AddProductToCartintent";
     }
 }

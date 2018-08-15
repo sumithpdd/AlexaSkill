@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace AlexaSkill.Classes
+﻿namespace AlexaSkill.Classes
 {
     public static class TwitterConfiguration
     {

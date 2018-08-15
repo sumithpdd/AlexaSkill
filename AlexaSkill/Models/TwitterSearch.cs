@@ -5,7 +5,7 @@ namespace AlexaSkill.Models
 {
     public class TwitterSearch
     {
-        public string Query { get; set;}
+        public string Query { get; set; }
 
         public List<TwitterResult> TwitterResult { get; set; }
     }

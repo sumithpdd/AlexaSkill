@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
+﻿using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using AlexaSkill.Data;
 
@@ -12,7 +8,7 @@ namespace AlexaSkill.Controllers
 {
     public class RequestsController : Controller
     {
-        private alexaskilldemoEntities db = new alexaskilldemoEntities();
+        private readonly alexaskilldemoEntities db = new alexaskilldemoEntities();
 
         // GET: Requests
         public ActionResult Index()
@@ -24,15 +20,9 @@ namespace AlexaSkill.Controllers
         // GET: Requests/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Request request = db.Requests.Find(id);
-            if (request == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var request = db.Requests.Find(id);
+            if (request == null) return HttpNotFound();
             return View(request);
         }
 
@@ -48,7 +38,9 @@ namespace AlexaSkill.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "id,MemberId,SessionId,AppId,RequestId,UserId,TimeStamp,Intent,Slots,IsNew,Version,Type,Reason,DateCreated")] Request request)
+        public ActionResult Create([Bind(Include =
+                "id,MemberId,SessionId,AppId,RequestId,UserId,TimeStamp,Intent,Slots,IsNew,Version,Type,Reason,DateCreated")]
+            Request request)
         {
             if (ModelState.IsValid)
             {
@@ -64,15 +56,9 @@ namespace AlexaSkill.Controllers
         // GET: Requests/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Request request = db.Requests.Find(id);
-            if (request == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var request = db.Requests.Find(id);
+            if (request == null) return HttpNotFound();
             ViewBag.MemberId = new SelectList(db.Members, "id", "AlexaUserId", request.MemberId);
             return View(request);
         }
@@ -82,7 +68,9 @@ namespace AlexaSkill.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "id,MemberId,SessionId,AppId,RequestId,UserId,TimeStamp,Intent,Slots,IsNew,Version,Type,Reason,DateCreated")] Request request)
+        public ActionResult Edit([Bind(Include =
+                "id,MemberId,SessionId,AppId,RequestId,UserId,TimeStamp,Intent,Slots,IsNew,Version,Type,Reason,DateCreated")]
+            Request request)
         {
             if (ModelState.IsValid)
             {
@@ -90,6 +78,7 @@ namespace AlexaSkill.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
+
             ViewBag.MemberId = new SelectList(db.Members, "id", "AlexaUserId", request.MemberId);
             return View(request);
         }
@@ -97,24 +86,19 @@ namespace AlexaSkill.Controllers
         // GET: Requests/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Request request = db.Requests.Find(id);
-            if (request == null)
-            {
-                return HttpNotFound();
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            var request = db.Requests.Find(id);
+            if (request == null) return HttpNotFound();
             return View(request);
         }
 
         // POST: Requests/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Request request = db.Requests.Find(id);
+            var request = db.Requests.Find(id);
             db.Requests.Remove(request);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -122,10 +106,7 @@ namespace AlexaSkill.Controllers
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
+            if (disposing) db.Dispose();
             base.Dispose(disposing);
         }
     }

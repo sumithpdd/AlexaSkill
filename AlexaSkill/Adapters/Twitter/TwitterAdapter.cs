@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LinqToTwitter;
 
 namespace AlexaSkill.Adapters.Twitter
@@ -13,11 +11,11 @@ namespace AlexaSkill.Adapters.Twitter
 
         public static string ConsumerSecret;
 
-        public static   List<TwitterResult> SearchAsync(string query)
+        public static List<TwitterResult> SearchAsync(string query)
         {
-            var auth = new ApplicationOnlyAuthorizer()
+            var auth = new ApplicationOnlyAuthorizer
             {
-                CredentialStore = new InMemoryCredentialStore()
+                CredentialStore = new InMemoryCredentialStore
                 {
                     ConsumerKey = ConsumerKey,
                     ConsumerSecret = ConsumerSecret
@@ -29,34 +27,30 @@ namespace AlexaSkill.Adapters.Twitter
                 //        ConsumerSecret = ConsumerSecret,
                 //    }
             };
-             
-            Task task = auth.AuthorizeAsync(); 
+
+            var task = auth.AuthorizeAsync();
             task.Wait();
             var twitterCtx = new TwitterContext(auth);
 
             var searchResults =
                 (from search in twitterCtx.Search
-                 where search.Type == SearchType.Search &&
-                       search.Query == query
-                 select search.Statuses)
+                    where search.Type == SearchType.Search &&
+                          search.Query == query
+                    select search.Statuses)
                 .SingleOrDefault();
 
             var twitterResult = new List<TwitterResult>();
 
             if (searchResults != null && searchResults.Count > 0)
-            {
                 foreach (var result in searchResults)
-                {
-                    twitterResult.Add( new TwitterResult()
-                        {
-                            Text = result.Text,
-                           Url = result.User.Url,
-                            ProfileImageUrl = result.User.ProfileImageUrl,
-                            ScreenNameResponse = result.User.ScreenNameResponse,
-                            CreatedAt = result.CreatedAt
+                    twitterResult.Add(new TwitterResult
+                    {
+                        Text = result.Text,
+                        Url = result.User.Url,
+                        ProfileImageUrl = result.User.ProfileImageUrl,
+                        ScreenNameResponse = result.User.ScreenNameResponse,
+                        CreatedAt = result.CreatedAt
                     });
-                }
-            }
             return twitterResult;
         }
     }

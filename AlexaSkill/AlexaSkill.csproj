@@ -225,7 +225,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Commerce\CartLine.cs" />
     <Compile Include="Models\Commerce\MiniCart.cs" />
+    <Compile Include="Models\Commerce\RecentOrder.cs" />
     <Compile Include="Models\Commerce\TopProduct.cs" />
     <Compile Include="Models\TwitterSearch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

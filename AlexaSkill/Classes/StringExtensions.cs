@@ -17,6 +17,7 @@ namespace AlexaSkill.Classes
                 body.Append(Uri.EscapeDataString(requestParameter.Value));
                 body.Append("&");
             }
+
             //remove trailing '&'
             body.Remove(body.Length - 1, 1);
 

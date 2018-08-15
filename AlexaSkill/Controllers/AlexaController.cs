@@ -5,19 +5,19 @@ using AlexaSkill.Classes;
 using AlexaSkill.Data;
 using AlexaSkill.Models;
 
-
 namespace AlexaSkill.Controllers
 {
     public class AlexaController : ApiController
     {
-        [HttpPost, Route("api/alexa/HabitatHome")]
+        [HttpPost]
+        [Route("api/alexa/HabitatHome")]
         public dynamic HabitatHome(AlexaRequest alexaRequest)
         {
-            var request = new Requests().Create(new Data.Request
+            var request = new Requests().Create(new Request
             {
                 MemberId = alexaRequest.Session.Attributes?.MemberId ?? 0,
                 TimeStamp = alexaRequest.Request.Timestamp,
-                Intent = (alexaRequest.Request.Intent == null) ? "" : alexaRequest.Request.Intent.Name,
+                Intent = alexaRequest.Request.Intent == null ? "" : alexaRequest.Request.Intent.Name,
                 AppId = alexaRequest.Session.Application.ApplicationId,
                 RequestId = alexaRequest.Request.RequestId,
                 SessionId = alexaRequest.Session.SessionId,
@@ -56,7 +56,6 @@ namespace AlexaSkill.Controllers
             return response;
         }
 
-      
 
         private AlexaResponse IntentRequestHandler(Request request)
         {
@@ -86,17 +85,19 @@ namespace AlexaSkill.Controllers
                 case AlexaIntents.Whereistheorderintent:
                     response = IntentHandlers.WhereIsTheOrderIntentHandler(request);
                     break;
-                case AlexaIntents.PickAWinnerintent:
- 
-                    response = IntentHandlers.PickAWinnerIntentHandler(request)  ; 
+                case AlexaIntents.AddProductToCartintent:
+                    response = IntentHandlers.AddProductToCartIntentHandler(request);
                     break;
+                case AlexaIntents.PickAWinnerintent:
 
+                    response = IntentHandlers.PickAWinnerIntentHandler(request);
+                    break;
             }
 
             return response;
         }
-        
-     
+
+
         private AlexaResponse SessionEndedRequestHandler(Request request)
         {
             return null;

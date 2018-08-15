@@ -1,19 +1,14 @@
 ﻿using System;
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using AlexaSkill.Classes;
 
 namespace AlexaSkill.Twitter
 {
-
     // <summary>
     /// Simple class for sending tweets to Twitter using Single-user OAuth.
     /// https://dev.twitter.com/oauth/overview/single-user
@@ -22,7 +17,7 @@ namespace AlexaSkill.Twitter
     /// "Keys and Access Tokens" section for your app. They can be found under the
     /// "Your Access Token" heading.
     /// </summary>
-    class TwitterApi
+    internal class TwitterApi
     {
         public enum Method
         {
@@ -30,17 +25,16 @@ namespace AlexaSkill.Twitter
             GET
         }
 
-        const string TwitterApiBaseUrl = "https://api.twitter.com/1.1/";
-        readonly string _consumerKey, _consumerKeySecret, _accessToken, _accessTokenSecret;
-        readonly HMACSHA1 _sigHasher;
-        readonly DateTime _epochUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private const string TwitterApiBaseUrl = "https://api.twitter.com/1.1/";
+        private readonly string _consumerKey, _consumerKeySecret, _accessToken, _accessTokenSecret;
+        private readonly DateTime _epochUtc = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private readonly HMACSHA1 _sigHasher;
 
         /// <summary>
-        /// Creates an object for sending tweets to Twitter using Single-user OAuth.
-        /// 
-        /// Get your access keys by creating an app at apps.twitter.com then visiting the
-        /// "Keys and Access Tokens" section for your app. They can be found under the
-        /// "Your Access Token" heading.
+        ///     Creates an object for sending tweets to Twitter using Single-user OAuth.
+        ///     Get your access keys by creating an app at apps.twitter.com then visiting the
+        ///     "Keys and Access Tokens" section for your app. They can be found under the
+        ///     "Your Access Token" heading.
         /// </summary>
         public TwitterApi(string consumerKey, string consumerKeySecret, string accessToken,
             string accessTokenSecret)
@@ -55,15 +49,15 @@ namespace AlexaSkill.Twitter
         }
 
         /// <summary>
-        /// Sends a tweet with the supplied text and returns the response from the Twitter API.
+        ///     Sends a tweet with the supplied text and returns the response from the Twitter API.
         /// </summary>
         public Task<string> Tweet(string text)
         {
             var data = new Dictionary<string, string>
-                {
-                    {"status", text},
-                    {"trim_user", "1"}
-                };
+            {
+                {"status", text},
+                {"trim_user", "1"}
+            };
 
             return SendPostRequest("statuses/update.json", data);
         }
@@ -71,23 +65,23 @@ namespace AlexaSkill.Twitter
         public Task<string> SearchTweets(string search, int count)
         {
             var fullUrl = TwitterApiBaseUrl +
-               "search/tweets.json";
+                          "search/tweets.json";
 
             var requestParameters =
-                new Dictionary<string, string> { { "q", search } };
+                new Dictionary<string, string> {{"q", search}};
 
-            var oAuthHeader = BuildOAuthHeader(requestParameters, fullUrl,Method.GET);
+            var oAuthHeader = BuildOAuthHeader(requestParameters, fullUrl, Method.GET);
 
             var response = SendGetRequest(fullUrl, oAuthHeader, requestParameters);
 
             return response;
         }
 
-        Task<string> SendPostRequest(string url, Dictionary<string, string> data)
+        private Task<string> SendPostRequest(string url, Dictionary<string, string> data)
         {
             var fullUrl = TwitterApiBaseUrl + url;
 
-            var oAuthHeader = BuildOAuthHeader(data, fullUrl,Method.POST);
+            var oAuthHeader = BuildOAuthHeader(data, fullUrl, Method.POST);
 
             // Build the form data (exclude OAuth stuff that's already in the header).
             var formData = new FormUrlEncodedContent(data.Where(kvp => !kvp.Key.StartsWith("oauth_")));
@@ -95,10 +89,10 @@ namespace AlexaSkill.Twitter
             return SendRequest(fullUrl, oAuthHeader, formData);
         }
 
-        private string BuildOAuthHeader(Dictionary<string, string> data, string fullUrl,Method method)
+        private string BuildOAuthHeader(Dictionary<string, string> data, string fullUrl, Method method)
         {
             // Timestamps are in seconds since 1/1/1970.
-            var timestamp = (int)((DateTime.UtcNow - _epochUtc).TotalSeconds);
+            var timestamp = (int) (DateTime.UtcNow - _epochUtc).TotalSeconds;
 
             // Add all the OAuth headers we'll need to use when constructing the hash.
             data.Add("oauth_consumer_key", _consumerKey);
@@ -112,14 +106,14 @@ namespace AlexaSkill.Twitter
             data.Add("oauth_signature", GenerateSignature(fullUrl, data, method));
 
             // Build the OAuth HTTP Header from the data.
-            string oAuthHeader = GenerateOAuthHeader(data);
+            var oAuthHeader = GenerateOAuthHeader(data);
             return oAuthHeader;
         }
 
         /// <summary>
-        /// Generate an OAuth signature from OAuth header values.
+        ///     Generate an OAuth signature from OAuth header values.
         /// </summary>
-        string GenerateSignature(string url, Dictionary<string, string> data, Method method)
+        private string GenerateSignature(string url, Dictionary<string, string> data, Method method)
         {
             var sigString = string.Join(
                 "&",
@@ -138,9 +132,9 @@ namespace AlexaSkill.Twitter
         }
 
         /// <summary>
-        /// Generate the raw OAuth HTML header from the values (including signature).
+        ///     Generate the raw OAuth HTML header from the values (including signature).
         /// </summary>
-        string GenerateOAuthHeader(Dictionary<string, string> data)
+        private string GenerateOAuthHeader(Dictionary<string, string> data)
         {
             return "OAuth " + string.Join(
                        ", ",
@@ -152,9 +146,9 @@ namespace AlexaSkill.Twitter
         }
 
         /// <summary>
-        /// Send HTTP Request and return the response.
+        ///     Send HTTP Request and return the response.
         /// </summary>
-        async Task<string> SendRequest(string fullUrl, string oAuthHeader, FormUrlEncodedContent formData)
+        private async Task<string> SendRequest(string fullUrl, string oAuthHeader, FormUrlEncodedContent formData)
         {
             using (var http = new HttpClient())
             {
@@ -167,10 +161,9 @@ namespace AlexaSkill.Twitter
             }
         }
 
-        async Task<string> SendGetRequest(string fullUrl, string oAuthHeader,
-             Dictionary<string, string> requestParameters)
+        private async Task<string> SendGetRequest(string fullUrl, string oAuthHeader,
+            Dictionary<string, string> requestParameters)
         {
-
             // request = (HttpWebRequest)WebRequest.Create();
             using (var http = new HttpClient())
             {
