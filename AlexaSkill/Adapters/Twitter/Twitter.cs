@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using AlexaSkill.Classes;
 
 namespace AlexaSkill.Twitter
 {
@@ -181,26 +182,6 @@ namespace AlexaSkill.Twitter
 
                 return respBody;
             }
-        }
-    }
-
-    public static class Extensions
-    {
-        public static string ToWebString(this Dictionary<string, string> source)
-        {
-            var body = new StringBuilder();
-
-            foreach (var requestParameter in source)
-            {
-                body.Append(requestParameter.Key);
-                body.Append("=");
-                body.Append(Uri.EscapeDataString(requestParameter.Value));
-                body.Append("&");
-            }
-            //remove trailing '&'
-            body.Remove(body.Length - 1, 1);
-
-            return body.ToString();
         }
     }
 }

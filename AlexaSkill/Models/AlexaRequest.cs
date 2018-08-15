@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace AlexaSkill
+namespace AlexaSkill.Models
 {
     [JsonObject]
     public class AlexaRequest

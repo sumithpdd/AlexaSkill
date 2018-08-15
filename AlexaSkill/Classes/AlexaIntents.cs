@@ -10,5 +10,6 @@
         public const string AmazonHelpintent = "AMAZON.HelpIntent";
         public const string Whereistheorderintent = "WhereIsTheOrderIntent";
         public const string PickAWinnerintent = "PickAWinnerIntent";
+        public const string ShowMyBasketintent = "ShowMyBasketIntent";
     }
 }

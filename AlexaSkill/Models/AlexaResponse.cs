@@ -2,7 +2,7 @@
 using AlexaSkill.Data;
 using Newtonsoft.Json;
 
-namespace AlexaSkill
+namespace AlexaSkill.Models
 {
     [JsonObject]
     public class AlexaResponse

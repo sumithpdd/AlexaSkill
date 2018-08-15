@@ -64,15 +64,23 @@
                 "when will i get my order",
                 "what is the satus of my order"
               ]
+            }, 
+            {
+              "name": "ShowMyBasketIntent",
+              "slots": [],
+              "samples": [
+                "show me my basket",
+                "what is in my basket",
+                "my basket status"
+              ]
             },
-
             {
               "name": "ShowBioIntent",
               "slots": [],
               "samples": [
                 "read my bio",
                 "talk about sumith",
-                "who made you" 
+                "who made you"
               ]
             },
             {
