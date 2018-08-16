@@ -59,8 +59,8 @@ namespace AlexaSkill.Adapters
             var recentOrder = homeStorefrontApi.GetRecentOrders().Result;
           
                 output.AppendFormat("The order placed on {0} in route with delivery. " +
-                                    "Tracking  number <say-as interpret-as=\"spell-out\">{1}.</say-as>. Total Amount {2} {3}", 
-                    recentOrder.Order.OrderDate,recentOrder.Order.TrackingNumber, recentOrder.Order.Total.Amount, recentOrder.Order.Total.CurrencyCode);
+                                    "Tracking  number <say-as interpret-as=\"spell-out\">{1}</say-as>. Total Amount {2} {3}", 
+                    recentOrder.Order.OrderDate,recentOrder.Order.TrackingNumber.Substring(0,5), recentOrder.Order.Total.Amount, recentOrder.Order.Total.CurrencyCode);
 
             var response = new AlexaResponse(output.ToString(), output.ToString(), true);
             return response;
@@ -103,7 +103,9 @@ namespace AlexaSkill.Adapters
                 db.SaveChanges();
             }
 
-            var text = "I have selected " + result.ScreenNameResponse + " - Tweet " + result.Text;
+            var text = "I have selected user <prosody volume=\"x-loud\">" + result.ScreenNameResponse + "</prosody><emphasis level=\"moderate\"> Tweet <break time=\"1s\"/>" + result.Text + "</emphasis>" +
+                "<audio src='https://s3.amazonaws.com/ask-soundlibrary/human/amzn_sfx_crowd_cheer_med_01.mp3'/> " +
+                       "<audio src='https://s3.amazonaws.com/ask-soundlibrary/human/amzn_sfx_crowd_applause_05.mp3'/>";
             var response = new AlexaResponse(text, text, true);
             return response;
         }
@@ -113,7 +115,7 @@ namespace AlexaSkill.Adapters
             var homeStorefrontApi = new HomeStorefrontApi();
             var cartadded = homeStorefrontApi.AddCartLine("Habitat_Master", "6042185").Result;
             var speechText = new StringBuilder();
-            speechText.AppendFormat("<speak>Product Mira laptop added to your existing cart.</speak> ");
+            speechText.AppendFormat("Product Mira laptop added to your existing cart.");
             var response = new AlexaResponse(speechText.ToString(), speechText.ToString(), true);
             return response;
         }
